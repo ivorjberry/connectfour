@@ -8,6 +8,8 @@ public class ConnectFourGUI {
   private JFrame frame; 
   private JLabel[][] slots; 
   private int currentPlayer;   
+  private int xSize = 700;
+  private int ySize = 600;
   
   public ConnectFourGUI() { 
      
@@ -25,8 +27,10 @@ public class ConnectFourGUI {
         panel.add(slots[column][row]); 
       }      
     }    
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
     frame.setContentPane(panel); 
-    frame.setSize(700,600); 
+    frame.setSize(xSize,ySize); 
+    frame.setLocation((screen.width - xSize) / 2, (screen.height - ySize) / 2);
     frame.setVisible(true); 
      
     currentPlayer = 1; 
@@ -79,6 +83,9 @@ public void set(int column, int row) {
  } 
    
   public static void main(String[] args) { 
+	SplashScreen splash = new SplashScreen(5000);
+	splash.showSplash();
+	
     ConnectFour game = new ConnectFour(); 
     ConnectFourGUI gui = new ConnectFourGUI(); 
     ConnectFourListener listener = new ConnectFourListener(game, gui); 
