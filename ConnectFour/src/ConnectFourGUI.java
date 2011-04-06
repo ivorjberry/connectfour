@@ -1,11 +1,14 @@
 import javax.swing.*; 
 import javax.swing.border.*; 
 import java.awt.*; 
+import java.io.File;
+
 public class ConnectFourGUI { 
    
   private JFrame frame; 
   private JLabel[][] slots; 
-  private int currentPlayer; 
+  private int currentPlayer;   
+  
   public ConnectFourGUI() { 
      
     frame = new JFrame("Connect Four"); 
@@ -50,14 +53,28 @@ public class ConnectFourGUI {
    
 public void set(int column, int row) { 
     // slots[column][row].setText("*" + currentPlayer + "*"); 
+	String path = new String();
     if (currentPlayer == 1) { 
-      slots[column][row].setIcon(new ImageIcon("C:\\Documents and Settings\\All Users\\Documents\\My Pictures\\Sample Pictures\\Sunset.jpg" 
- ));
+    	path = "Images/RedChip.png";
     }    
     else { 
-      slots[column][row].setIcon(new ImageIcon("C:\\Documents and Settings\\All Users\\Documents\\My Pictures\\Sample Pictures\\Winter.jpg" 
- ));
+      path = "Images/BlackChip.png";
     }   
+    
+    java.net.URL imgURL = getClass().getResource(path);
+    if (imgURL != null) {
+    	ImageIcon originalImageIcon = new ImageIcon(imgURL);
+    	Image initialImage = originalImageIcon.getImage();
+    	Image resizedImage = initialImage.getScaledInstance(90, 90,  java.awt.Image.SCALE_SMOOTH);
+    	
+    	ImageIcon image = new ImageIcon(resizedImage);
+    	if (image != null) {
+    		slots[column][row].setIcon(image);
+    	}
+    } else {
+        System.err.println("Couldn't find file: " + path);
+    }
+    
     currentPlayer = (currentPlayer%2)+1; 
  } 
    
