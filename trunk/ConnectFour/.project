@@ -14,4 +14,16 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/Images/BlackChip.png</name>
+			<type>1</type>
+			<locationURI>PARENT_LOC/BlackChip.png</locationURI>
+		</link>
+		<link>
+			<name>src/Images/RedChip.png</name>
+			<type>1</type>
+			<locationURI>PARENT_LOC/RedChip.png</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
