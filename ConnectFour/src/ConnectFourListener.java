@@ -22,6 +22,11 @@ public class ConnectFourListener implements MouseListener {
   public void mouseReleased(MouseEvent event) { 
   }  
   public void mouseEntered(MouseEvent event) { 
+	JLabel label = (JLabel) event.getComponent(); 
+    int column = gui.getColumn(label); 
+    if (column != -1) { 
+      gui.mouseInColumn(column); 
+    }   
   }  
   public void mouseExited(MouseEvent event) { 
   } 
