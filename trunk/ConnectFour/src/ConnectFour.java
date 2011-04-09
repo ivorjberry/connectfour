@@ -13,15 +13,20 @@ public class ConnectFour {
   public ConnectFour() { 
     // create the grid 
     grid = new int[7][6]; 
-    // initialize the grid 
-    for (int row=0; row<6; row++) { 
-      for (int column=0; column<7; column++) { 
-        // set the position to a default value 
-        grid[column][row] = 0; 
-      }     
-    }
-    // set the first move to Player 1 
-    currentPlayer = 1; 
+    clear();
+  }
+  
+  public void clear()
+  {
+	    // initialize the grid 
+	    for (int row=0; row<6; row++) { 
+	      for (int column=0; column<7; column++) { 
+	        // set the position to a default value 
+	        grid[column][row] = 0; 
+	      }     
+	    }
+	    // set the first move to Player 1 
+	    currentPlayer = 1; 	  
   }
    
  /*  
@@ -31,7 +36,7 @@ public class ConnectFour {
    * and return the row that the checker lands on. 
  */
   int drop(int column) { 
-    if (hasWon()) { 
+    if (hasWon() != 0) { 
       return -1; 
     }    
      
@@ -41,7 +46,8 @@ public class ConnectFour {
       // if the row is 6, it went through all 6 rows 
       // of the grid, and couldn't find an empty one. 
       // Therefore, return false to indicate that this  
-      // drop operation failed.       return -1; 
+      // drop operation failed.
+    	return -1; 
     }    
     // fill the row of that column with a checker. 
     grid[column][row] = currentPlayer; 
@@ -63,8 +69,8 @@ public class ConnectFour {
   } 
    
  
-  public boolean hasWon() { 
-    boolean status = false; 
+  public int hasWon() { 
+    int status = 0; 
      
     // check for a horizontal win 
     for (int row=0; row<6; row++) { 
@@ -73,7 +79,7 @@ public class ConnectFour {
             grid[column][row] == grid[column+1][row] && 
             grid[column][row] == grid[column+2][row] && 
             grid[column][row] == grid[column+3][row]) { 
-          status = true; 
+          status = grid[column][row]; 
         }       
       }      
     }   
@@ -85,7 +91,7 @@ public class ConnectFour {
             grid[column][row] == grid[column][row+1] && 
             grid[column][row] == grid[column][row+2] && 
             grid[column][row] == grid[column][row+3]) { 
-          status = true; 
+          status = grid[column][row]; 
         }        
       }
     }
@@ -97,7 +103,7 @@ public class ConnectFour {
             grid[column][row] == grid[column+1][row+1] && 
             grid[column][row] == grid[column+2][row+2] && 
             grid[column][row] == grid[column+3][row+3]) { 
-          status = true; 
+          status = grid[column][row]; 
         }        
       }      
     }    
@@ -109,7 +115,7 @@ public class ConnectFour {
             grid[column][row] == grid[column+1][row-1] && 
             grid[column][row] == grid[column+2][row-2] && 
             grid[column][row] == grid[column+3][row-3]) { 
-          status = true; 
+          status = grid[column][row]; 
         }        
       }      
     }    

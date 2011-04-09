@@ -17,7 +17,11 @@ public class ConnectFourGUI {
   private final int NUM_ROWS = 6;
   private final int NUM_COLS = 7;
   
-  public ConnectFourGUI() { 
+  private ConnectFour game;
+  
+  public ConnectFourGUI(ConnectFour _game) { 
+	game = _game;
+	  
     frame = new JFrame("Connect Four"); 
     
     xSize = (NUM_ROWS+1) * 100; // this will set the sizes based on the number of rows
@@ -57,6 +61,25 @@ public class ConnectFourGUI {
      
     currentPlayer = 1; 
   } 
+  
+  public void clear()
+  {
+	    // set the drop zone slots
+	    //drops = new JLabel[NUM_COLS];
+	    for (int col = 0; col < NUM_COLS; col++)
+	    {
+	    	drops[col].setIcon(new ImageIcon());
+	    }
+	    
+	    // set the inner slots
+	    for (int row = NUM_ROWS-1; row >= 0; row--) { //going this way so jlabels added correctly
+	      for (int column = 0; column < NUM_COLS; column++) { 
+	        slots[column][row].setIcon(new ImageIcon());
+	      }      
+	    }    
+	    
+	  currentPlayer = 1; 
+  }
    
   public void addListener(ConnectFourListener listener) { 
 	for (int column = 0; column < NUM_COLS; column++) { 
@@ -147,14 +170,37 @@ public void set(int column, int row) {
 	        System.err.println("Couldn't find file: " + path);
 	    }
 	    
+	    int winner = game.hasWon();
+	    if (winner != 0)
+	    {
+	    	Object stringArray[] = { "Play Again", "Quit" };
+	    	int option = JOptionPane.showOptionDialog(frame, "Player " + winner + " has won. Would you like to play again?", "Play Again?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, stringArray, stringArray[1]);
+	    	if (option == JOptionPane.YES_OPTION)
+	    	{
+	    		game.clear();
+	    		this.clear();
+	    	}
+	    	else
+	    	{
+	    		System.exit(0);
+	    	}
+	    	
+	    }
+	    
 	}
    
   public static void main(String[] args) { 
 	SplashScreen splash = new SplashScreen(5000);
 	splash.showSplash();
 	
+	while (!splash.shouldContinue())
+	{
+		if (splash.shouldQuit())
+			System.exit(0);
+	}
+	
     ConnectFour game = new ConnectFour(); 
-    ConnectFourGUI gui = new ConnectFourGUI(); 
+    ConnectFourGUI gui = new ConnectFourGUI(game); 
     ConnectFourListener listener = new ConnectFourListener(game, gui); 
   }  
 }
