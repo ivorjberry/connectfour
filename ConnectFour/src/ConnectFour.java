@@ -1,3 +1,6 @@
+//Code adapted from: http://wiki.acse.net/images/1/1d/ConnectFour.pdf
+
+
 public class ConnectFour { 
    
   // the grid used for storing the game layout. 

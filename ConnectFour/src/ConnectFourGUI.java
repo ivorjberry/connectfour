@@ -1,3 +1,5 @@
+//Code adapted from: http://wiki.acse.net/images/1/1d/ConnectFour.pdf
+
 import javax.swing.*; 
 import javax.swing.border.*; 
 import java.awt.*; 

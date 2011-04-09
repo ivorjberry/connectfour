@@ -1,3 +1,4 @@
+//Code adapted from:
 //http://www.java2s.com/Code/Java/Swing-JFC/Asimpleapplicationtoshowatitlescreeninthecenterofthescreen.htm
 /*
 Java Swing, 2nd Edition
@@ -5,12 +6,7 @@ By Marc Loy, Robert Eckstein, Dave Wood, James Elliott, Brian Cole
 ISBN: 0-596-00408-7
 Publisher: O'Reilly 
 */
-// SplashScreen.java
-//A simple application to show a title screen in the center of the screen
-//for the amount of time given in the constructor. This class includes
-//a sample main() method to test the splash screen, but it's meant for use
-//with other applications.
-//
+
 
 import java.awt.BorderLayout;
 import java.awt.Color;
