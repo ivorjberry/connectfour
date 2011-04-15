@@ -123,7 +123,6 @@ public class SplashScreen extends JWindow implements ActionListener{
 	  return shouldQuit;
   }
 
-@Override
 public void actionPerformed(ActionEvent e) {
 	if ("play".equals(e.getActionCommand()))
 	{
