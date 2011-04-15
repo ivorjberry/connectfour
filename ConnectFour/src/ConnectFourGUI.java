@@ -6,9 +6,9 @@ import java.awt.*;
 import java.io.File;
 
 
-public class ConnectFourGUI { 
+public class ConnectFourGUI extends JPanel{ 
    
-  private JFrame frame; 
+  private JPanel frame; 
   private JLabel[] drops;
   private JLabel[][] slots; 
   private int currentPlayer;   
@@ -24,13 +24,13 @@ public class ConnectFourGUI {
   public ConnectFourGUI(ConnectFour _game) { 
 	game = _game;
 	  
-    frame = new JFrame("Connect Four"); 
+    //frame = new JPanel(); 
     
     xSize = (NUM_ROWS+1) * 100; // this will set the sizes based on the number of rows
     ySize = NUM_COLS * 100; // this will set the sizes based on the number of rows
     
-    JPanel panel = (JPanel) frame.getContentPane(); 
-    panel.setLayout(new GridLayout(NUM_ROWS+1,NUM_COLS)); 
+    //JPanel panel = (JPanel) frame.getContentPane(); 
+    this.setLayout(new GridLayout(NUM_ROWS+1,NUM_COLS)); 
     
     // set the drop zone slots
     drops = new JLabel[NUM_COLS];
@@ -40,7 +40,7 @@ public class ConnectFourGUI {
         
     	drops[col].setHorizontalAlignment(SwingConstants.CENTER); 
     	drops[col].setBorder(new LineBorder(Color.red)); 
-        panel.add(drops[col]); 
+    	this.add(drops[col]); 
     }
     
     // set the inner slots
@@ -51,15 +51,15 @@ public class ConnectFourGUI {
                     
         slots[column][row].setHorizontalAlignment(SwingConstants.CENTER); 
         slots[column][row].setBorder(new LineBorder(Color.green)); 
-        panel.add(slots[column][row]); 
+        this.add(slots[column][row]); 
       }      
     }    
     
     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    frame.setContentPane(panel); 
+    /*frame.setContentPane(panel); 
     frame.setSize(xSize,ySize); 
     frame.setLocation((screen.width - xSize) / 2, (screen.height - ySize) / 2);
-    frame.setVisible(true); 
+    frame.setVisible(true); */
      
     currentPlayer = 1; 
   } 
@@ -191,18 +191,5 @@ public void set(int column, int row) {
 	    
 	}
    
-  public static void main(String[] args) { 
-	SplashScreen splash = new SplashScreen(5000);
-	splash.showSplash();
-	
-	while (!splash.shouldContinue())
-	{
-		if (splash.shouldQuit())
-			System.exit(0);
-	}
-	
-    ConnectFour game = new ConnectFour(); 
-    ConnectFourGUI gui = new ConnectFourGUI(game); 
-    ConnectFourListener listener = new ConnectFourListener(game, gui); 
-  }  
+  //MAIN WAS HERE
 }
