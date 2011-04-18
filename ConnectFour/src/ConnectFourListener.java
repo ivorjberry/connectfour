@@ -6,18 +6,23 @@ public class ConnectFourListener implements MouseListener {
    
   ConnectFourGUI gui; 
   ConnectFour game; 
-  public ConnectFourListener(ConnectFour game, ConnectFourGUI gui) { 
+  Client client;
+  public ConnectFourListener(ConnectFour game, ConnectFourGUI gui, Client client) { 
     this.game = game; 
     this.gui = gui; 
+    this.client = client;
     gui.addListener(this); 
   }  
   public void mouseClicked(MouseEvent event) { 
-    JLabel label = (JLabel) event.getComponent(); 
-    int column = gui.getColumn(label); 
-    int row = game.drop(column); 
-    if (row != -1) { 
-      gui.set(column, row); 
-    }   
+	if (gui.color == gui.currentPlayer) {
+	    JLabel label = (JLabel) event.getComponent(); 
+	    int column = gui.getColumn(label); 
+	    client.send_move(column);
+	    int row = game.drop(column); 
+	    if (row != -1) { 
+	      gui.set(column, row); 
+	    }   
+	}
   }
   public void mousePressed(MouseEvent event) { 
   }  

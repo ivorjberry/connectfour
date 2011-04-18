@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+
 import java.io.*;
 import java.net.*;
 
@@ -61,6 +62,8 @@ public class Client extends JFrame {
    private int portNumber;
 
    private int groupId;
+   
+   int playerNum;
 
    JFileChooser fc;
 
@@ -69,20 +72,29 @@ public class Client extends JFrame {
    ConnectFour game;
    
    ConnectFourGUI gui;
+   
+   ConnectFourListener listener;
+   
+   boolean leave;
 
-   public Client(String to, String uname, String hn, int pn, int r) {
+   public Client(String to, String uname, String hn, int pn, int r, int player) {
       // New Chat Window
       super("Chat with " + to);
 
+      playerNum = player;
       game = new ConnectFour(); 
-	  gui = new ConnectFourGUI(game);
-	  ConnectFourListener listener = new ConnectFourListener(game, gui);
+	  gui = new ConnectFourGUI(game, playerNum, this);
+	  
+	  listener = new ConnectFourListener(game, gui, this);
       
       hostName = hn;
       portNumber = pn;
       userName = uname;
       groupId = r;
+      playerNum = player;
 
+      leave = false;
+      
       // Set up JPanels for chat window
       center = new JPanel(new GridLayout(1, 1));
       southTop = new JPanel();
@@ -106,7 +118,7 @@ public class Client extends JFrame {
 
       save = new JMenuItem("Save Conversation");
       save.addActionListener(new ChatActionListener());
-      quit = new JMenuItem("Exit Chat");
+      quit = new JMenuItem("Exit Game");
       quit.addActionListener(new ChatActionListener());
 
       fileMenu.add(save);
@@ -191,9 +203,13 @@ public class Client extends JFrame {
       // Dispose if X is clicked
       this.addWindowListener(new WindowAdapter() {
          public void windowClosing(WindowEvent e) {
-            MainWindow.chatWindows.remove(groupId);
-            setVisible(false);
-            dispose();
+        	 Object stringArray [] = {"Yes", "No"};
+         	int option = JOptionPane.showOptionDialog(null, "Are you sure you want to forfeit?", "Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, stringArray, stringArray[1]); 
+         	if (option == JOptionPane.YES_OPTION) {
+ 	        	MainWindow.chatWindows.remove(groupId);
+ 	        	setVisible(false);
+ 	        	dispose();
+         	}
          }
       });
    }
@@ -218,8 +234,17 @@ public class Client extends JFrame {
       public void actionPerformed(ActionEvent event) {
          // Action performed function
          if (event.getSource().equals(quit)) { // Close Window
-            MainWindow.chatWindows.remove(groupId);
-            Client.this.dispose();
+        	/*JDialog forfeit;
+        	forfeit = new Forfeit("Warning!");
+        	forfeit.setVisible(true);
+        	*/
+        	Object stringArray [] = {"Yes", "No"};
+        	int option = JOptionPane.showOptionDialog(Client.this, "Are you sure you want to forfeit?", "Warning", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, stringArray, stringArray[1]); 
+        	if (option == JOptionPane.YES_OPTION) {
+        		send_forfeit("forfeit");
+	        	MainWindow.chatWindows.remove(groupId);
+	        	Client.this.dispose();
+        	}
          } else if (event.getSource().equals(save)) {// Save conversation
             fc = new JFileChooser();
             int returnVal = fc.showSaveDialog(Client.this);
@@ -283,9 +308,41 @@ public class Client extends JFrame {
       }
    }
 
+   public void exit_cleanup() {
+	   MainWindow.chatWindows.remove(groupId);
+	   Client.this.dispose();
+   }
+   
+   public void send_forfeit(String s) {
+	   try {
+	         setup_socket();
+
+	         dos = new DataOutputStream(socket.getOutputStream());
+
+	         dos.writeChars("forfeit" + "\0");
+	         dos.flush();
+
+	         dos.writeChars(Integer.toString(groupId) + "\0");
+	         dos.flush();
+	         
+	         dos.writeChars(userName + "\0");
+	         dos.flush();
+	         
+	         dos.writeChars(s + "\0");
+	         dos.flush();
+
+	         dos.close();
+	         socket.close();
+	      } catch (Exception e) {
+	         System.out.println("### send_forfeit: " + e);
+	      }
+   }
+   
    public void get_chat(String sender, String msg) {// Get user peoples messages
       if (!msg.equals("")) {
          String text = msg;
+         //TEST
+         System.out.println(sender + ": " + msg);
          final String newline = "\n";
          try {
             doc.insertString(doc.getLength(), sender + ": ", blue);
@@ -324,6 +381,38 @@ public class Client extends JFrame {
       }
    }
 
+   public void send_move(int col) {// Initial chat with someone else
+	      try {
+	         setup_socket();
+
+	         dos = new DataOutputStream(socket.getOutputStream());
+
+	         dos.writeChars("move" + "\0");
+	         dos.flush();
+	         dos.writeChars(Integer.toString(col) + "\0");
+	         dos.flush();
+	         
+	         dos.writeChars(Integer.toString(groupId) + "\0");
+	         dos.flush();
+	         
+	         dos.writeChars(userName + "\0");
+	         dos.flush();
+
+	         dos.close();
+	         socket.close();
+	      } catch (Exception e) {
+	         System.out.println("### send_move: " + e);
+	      }
+	   }
+
+   
+   public void get_move(int col) {
+	   int row = game.drop(col); 
+	    if (row != -1) { 
+	      gui.set(col, row); 
+	    }   
+   }
+   
    public void send_file(String fileName, String filePath) {// Send file
                                                             // function
 
@@ -369,7 +458,47 @@ public class Client extends JFrame {
          System.out.println("### Client.java, setup_socket: " + e);
       }
    }
-
+/*
+   public class Forfeit extends JDialog {
+	   private JLabel warning;
+	   
+	   private JButton forfeit;
+	   
+	   private JButton cancel;
+	   
+	   private JPanel top, bot;
+	   
+	   public Forfeit(String inTitle) {
+		   super(Client.this, inTitle, true);
+	       setSize(200, 600);
+	       
+	       top.setLayout(new FlowLayout());
+	       bot.setLayout(new FlowLayout());
+	       
+	       warning = new JLabel("Are you sure you want to forfeit?");
+	       top.add(warning);
+	       
+	       forfeit = new JButton("Yes");
+	       forfeit.addActionListener(new DialListener());
+	       bot.add(forfeit);
+	       cancel = new JButton("Cancel");
+	       cancel.addActionListener(new DialListener());
+	       bot.add(cancel);
+	       
+	       add(top, BorderLayout.NORTH);
+	       add(bot, BorderLayout.SOUTH);
+	   }
+	   public class DialListener implements ActionListener {// Dialog Action Listener
+	         public void actionPerformed(ActionEvent event) {
+	            if (event.getSource().equals(forfeit)) {
+	               leave = true;
+	            } else {
+	               leave = false;	 
+	            }
+	         }
+	   }
+   }
+ */  
    public class newBuddy extends JDialog {
       private static final long serialVersionUID = 1L;
 

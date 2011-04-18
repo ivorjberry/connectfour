@@ -109,6 +109,7 @@ public class ThreadedServer implements Runnable {
                   System.out.println("### Sent room number");
                } catch (Exception ex) {
                }
+               
                System.out.println("==========================");
             } else if (command.equals("addmember")) {
                System.out.println("=======Add Member======");
@@ -343,7 +344,26 @@ public class ThreadedServer implements Runnable {
                } catch (Exception E) {
                }
                System.out.println("==========================");
+            } else if (command.equals("move")) {
+
+            	String columnString = input2String(inD);
+                System.out.println("### Column String: " + columnString);
+                String groupIDString = input2String(inD);
+                System.out.println("### GroupID String: " + columnString);
+                String sender = input2String(inD);
+                System.out.println("### sender: " + sender);
+            	service.send_move(columnString, groupIDString, sender);
             }
+            else if (command.equals("forfeit")) {
+
+	             String groupIDString = input2String(inD);
+	             System.out.println("### GroupID String: " + groupIDString);
+	             String sender = input2String(inD);
+	             System.out.println("### sender: " + sender);
+	             String type = input2String(inD);
+	             System.out.println("### type: " + type);
+	         	 service.admin_forfeit(groupIDString, sender, type);
+         	}
          }
       }
 
@@ -359,6 +379,9 @@ public class ThreadedServer implements Runnable {
          members.add(user1);
          members.add(user2);
          chatRooms.put(room, members);
+         
+         service.sendMessage(user1, "", room);
+         
          return room;
       }
 

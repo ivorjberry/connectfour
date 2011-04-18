@@ -52,6 +52,83 @@ public class Servicer {
       }*/
       return (newInfo + "\0");
    }
+   
+   public void send_move(String columnString, String groupIDString, String sender) {
+	   
+	   int room = Integer.parseInt(groupIDString);
+	   
+	   Vector<String> members = ThreadedServer.chatRooms.get(room);
+	      // Traverses members of chatRoom and sends message to all members
+	      for (Enumeration<String> traverse = members.elements(); traverse
+	            .hasMoreElements();) {
+	         String receiver = (String) traverse.nextElement();
+	         if (receiver.equals(sender)) {
+	            continue;
+	         }
+
+	         Socket receiverSocket = onlineUsers.get(receiver);
+	         try {
+	            DataOutputStream outfile = new DataOutputStream(
+	                  receiverSocket.getOutputStream());
+
+	            outfile.writeChars("@move\0");
+	            outfile.flush();
+	            
+	            outfile.writeChars(columnString + "\0");
+	            outfile.flush();
+	            
+	            outfile.writeChars(groupIDString + "\0");
+	            outfile.flush();
+
+	         } catch (Exception e) {
+	            // Write error
+	         }
+	      }
+	   
+   }
+   
+   public void admin_forfeit(String groupIDString, String sender, String type) {
+	   
+	   int room = Integer.parseInt(groupIDString);
+	   
+	   Vector<String> members = ThreadedServer.chatRooms.get(room);
+	      // Traverses members of chatRoom and sends message to all members
+	      for (Enumeration<String> traverse = members.elements(); traverse
+	            .hasMoreElements();) {
+	         String receiver = (String) traverse.nextElement();
+	         if (receiver.equals(sender)) {
+	            continue;
+	         }
+	        System.out.println("entering for loop iteration");
+	         Socket receiverSocket = onlineUsers.get(receiver);
+	         try {
+	        	 DataOutputStream outfile = new DataOutputStream(
+	                     receiverSocket.getOutputStream());
+	        	 
+	        	 outfile.writeChars("@message\0");
+	             outfile.flush();
+
+	             String roomString = Integer.toString(room);
+	             outfile.writeChars(roomString + "\0");
+	             outfile.flush();
+
+	             outfile.writeChars(sender + "\0");
+	             outfile.flush();
+	             
+	             if (type.equals("forfeit")) {
+		             outfile.writeChars(sender+" has forfeit and left the game. You win, find another game!" + "\0");
+	             }
+	             else if (type.equals("leave")) {
+	            	 outfile.writeChars(sender+" has left the game. Find another game!" + "\0");
+	             }
+	             outfile.flush();
+	             
+	         } catch (Exception e) {
+	            // Write error
+	         }
+	      }
+	   
+   }
 
    public void sendMessage(String sender, String message, int room) {
       Vector<String> members = ThreadedServer.chatRooms.get(room);
