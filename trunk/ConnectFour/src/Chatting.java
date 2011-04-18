@@ -44,6 +44,15 @@ public class Chatting implements Runnable {
                   long size = dis.readLong();
                   System.out.println("we got: " + fileName + " size: " + size);
                   download_file(fileName, size);
+               } else if (sender.equals("@move")) { 
+            	   System.out.println("### Receiving move.");
+                   String columnString = MainWindow.readString(dis);
+                   
+                   String s = MainWindow.readString(dis);
+                   int groupId = Integer.parseInt(s);
+                   
+                   MainWindow.chatWindows.get(groupId).get_move(Integer.parseInt(columnString));
+                   
                } else {
                   System.out.println("### Message received.");
 
@@ -61,7 +70,10 @@ public class Chatting implements Runnable {
                   } else {
                      // Chatwindow does not exist
                      Client chat = new Client(sender, uname, hostName,
-                           portNumber, groupId);
+                           portNumber, groupId, 2);
+                     if (newMsg.equals("")) {
+                         newMsg = "You have been challenged!";
+                     }
                      chat.get_chat(sender, newMsg);
                      MainWindow.chatWindows.put(groupId, chat);
                   }

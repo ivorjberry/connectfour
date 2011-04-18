@@ -292,7 +292,7 @@ public class MainWindow extends JFrame {
                }
 
                Client chat = new Client(itemList.getSelectedValue().toString(),
-                     uname, hostName, portNumber, roomNum);
+                     uname, hostName, portNumber, roomNum, 1);
                chatWindows.put(roomNum, chat);
             }
          } else if (ae.getSource() == storeFile) {

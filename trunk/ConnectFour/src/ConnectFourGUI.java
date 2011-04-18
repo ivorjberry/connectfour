@@ -11,7 +11,8 @@ public class ConnectFourGUI extends JPanel{
   private JPanel frame; 
   private JLabel[] drops;
   private JLabel[][] slots; 
-  private int currentPlayer;   
+  static public int currentPlayer;   
+  static public int color;
   private int xSize;
   private int ySize;
   private int currentCol = 0;
@@ -20,12 +21,15 @@ public class ConnectFourGUI extends JPanel{
   private final int NUM_COLS = 7;
   
   private ConnectFour game;
+  private Client client;
   
-  public ConnectFourGUI(ConnectFour _game) { 
+  public ConnectFourGUI(ConnectFour _game, int player, Client window) { 
 	game = _game;
+	client = window;
 	  
     //frame = new JPanel(); 
     
+	color = player;
     xSize = (NUM_ROWS+1) * 100; // this will set the sizes based on the number of rows
     ySize = NUM_COLS * 100; // this will set the sizes based on the number of rows
     
@@ -67,7 +71,7 @@ public class ConnectFourGUI extends JPanel{
   public void clear()
   {
 	    // set the drop zone slots
-	    //drops = new JLabel[NUM_COLS];
+	    //drops = new JLabel[NUM_COLS];center
 	    for (int col = 0; col < NUM_COLS; col++)
 	    {
 	    	drops[col].setIcon(new ImageIcon());
@@ -151,7 +155,7 @@ public void set(int column, int row) {
 		currentCol = column;
 		
 		String path = new String();
-	    if (currentPlayer == 1) { 
+	    if (color == 1) { 
 	    	path = "Images/RedChip.png";
 	    }    
 	    else { 
@@ -184,7 +188,8 @@ public void set(int column, int row) {
 	    	}
 	    	else
 	    	{
-	    		System.exit(0);
+	    		client.send_forfeit("leave");
+	    		client.exit_cleanup();
 	    	}
 	    	
 	    }
