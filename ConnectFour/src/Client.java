@@ -16,6 +16,8 @@ public class Client extends JFrame {
    private JMenuItem save;
 
    private JMenuItem addBuddy;
+   
+   private JMenuItem sendFileMenu;
 
    private JPanel center;
 
@@ -79,7 +81,7 @@ public class Client extends JFrame {
 
    public Client(String to, String uname, String hn, int pn, int r, int player) {
       // New Chat Window
-      super("Chat with " + to);
+      super("Game of Connect4 with " + to);
 
       playerNum = player;
       game = new ConnectFour(); 
@@ -114,24 +116,27 @@ public class Client extends JFrame {
 
       // Menu Bar
       JMenu fileMenu = new JMenu("File");
-      JMenu editMenu = new JMenu("Edit");
+      //JMenu editMenu = new JMenu("Edit");
 
       save = new JMenuItem("Save Conversation");
       save.addActionListener(new ChatActionListener());
       quit = new JMenuItem("Exit Game");
       quit.addActionListener(new ChatActionListener());
+      sendFileMenu = new JMenuItem("Send File");
+      sendFileMenu.addActionListener(new ChatActionListener());
 
       fileMenu.add(save);
+      fileMenu.add(sendFileMenu);
       fileMenu.add(quit);
 
       // Add Components
       addBuddy = new JMenuItem("Add Friend To Chat");
       addBuddy.addActionListener(new ChatActionListener());
-      editMenu.add(addBuddy);
+      //editMenu.add(addBuddy);
 
       JMenuBar menuBar = new JMenuBar();
       menuBar.add(fileMenu);
-      menuBar.add(editMenu);
+      //menuBar.add(editMenu);
       setJMenuBar(menuBar);
 
       chatArea = new JTextPane();
@@ -201,6 +206,7 @@ public class Client extends JFrame {
       setVisible(true);
 
       // Dispose if X is clicked
+      this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
       this.addWindowListener(new WindowAdapter() {
          public void windowClosing(WindowEvent e) {
         	 Object stringArray [] = {"Yes", "No"};
@@ -279,7 +285,7 @@ public class Client extends JFrame {
             } else {
                System.out.println("String of size 0");
             }
-         } else if (event.getSource().equals(sendFile)) {// Send File
+         } else if (event.getSource().equals(sendFile) || event.getSource().equals(sendFileMenu)) {// Send File
             fc = new JFileChooser();
             int returnVal = fc.showOpenDialog(Client.this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {

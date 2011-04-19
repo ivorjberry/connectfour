@@ -102,8 +102,9 @@ public class ClientLogin extends JFrame {
 
       ssSouth.add(btnLogin);
 
-      btnCreate = new JButton("Create Account");
+      btnCreate = new JButton("Create Account (Currently Unavailable)");
       btnCreate.addActionListener(actionListener);
+      btnCreate.setEnabled(false);
 
       ssSouth.add(btnCreate);
 
