@@ -9,8 +9,9 @@ import java.io.File;
 public class ConnectFourGUI extends JPanel{ 
    
   private JPanel frame; 
-  private JLabel[] drops;
-  private JLabel[][] slots; 
+  private TileCanvas[] drops;
+  private TileCanvas[][] slots; 
+  
   static public int currentPlayer;   
   static public int color;
   private int xSize;
@@ -22,6 +23,7 @@ public class ConnectFourGUI extends JPanel{
   
   private ConnectFour game;
   private Client client;
+  private ConnectFourListener c4listener;
   
   public ConnectFourGUI(ConnectFour _game, int player, Client window) { 
 	game = _game;
@@ -30,31 +32,46 @@ public class ConnectFourGUI extends JPanel{
     //frame = new JPanel(); 
     
 	color = player;
-    xSize = (NUM_ROWS+1) * 100; // this will set the sizes based on the number of rows
-    ySize = NUM_COLS * 100; // this will set the sizes based on the number of rows
+    xSize = (NUM_ROWS+1) * 105; // this will set the sizes based on the number of rows
+    ySize = NUM_COLS * 105; // this will set the sizes based on the number of rows
     
     //JPanel panel = (JPanel) frame.getContentPane(); 
     this.setLayout(new GridLayout(NUM_ROWS+1,NUM_COLS)); 
+    this.setSize(xSize, ySize);
+    this.setBackground(Color.lightGray);
     
     // set the drop zone slots
-    drops = new JLabel[NUM_COLS];
+    drops = new TileCanvas[NUM_COLS];
     for (int col = 0; col < NUM_COLS; col++)
     {
-    	drops[col] = new JLabel(); 
+    	drops[col] = new TileCanvas();
+        drops[col].setSize(100, 100);
         
-    	drops[col].setHorizontalAlignment(SwingConstants.CENTER); 
-    	drops[col].setBorder(new LineBorder(Color.red)); 
     	this.add(drops[col]); 
     }
     
     // set the inner slots
-    slots = new JLabel[NUM_COLS][NUM_ROWS]; 
+    slots = new TileCanvas[NUM_COLS][NUM_ROWS]; 
     for (int row = NUM_ROWS-1; row >= 0; row--) { //going this way so jlabels added correctly
       for (int column = 0; column < NUM_COLS; column++) { 
-        slots[column][row] = new JLabel(); 
+        slots[column][row] = new TileCanvas();
+        slots[column][row].setSize(100, 100);
+        
+        String path = "Images/Border.png";
+        
+        java.net.URL imgURL = getClass().getResource(path);
+        if (imgURL != null) {
+        	ImageIcon originalImageIcon = new ImageIcon(imgURL);
+        	Image initialImage = originalImageIcon.getImage();
+        	Image resizedImage = initialImage.getScaledInstance(100, 100,  java.awt.Image.SCALE_SMOOTH);
+        	
+        	ImageIcon image = new ImageIcon(resizedImage);
+        	
+        	slots[column][row].setOverImage(image);
+        }
                     
-        slots[column][row].setHorizontalAlignment(SwingConstants.CENTER); 
-        slots[column][row].setBorder(new LineBorder(Color.green)); 
+        //slots[column][row].setHorizontalAlignment(SwingConstants.CENTER); 
+        //slots[column][row].setBorder(new LineBorder(Color.green)); 
         this.add(slots[column][row]); 
       }      
     }    
@@ -74,13 +91,13 @@ public class ConnectFourGUI extends JPanel{
 	    //drops = new JLabel[NUM_COLS];center
 	    for (int col = 0; col < NUM_COLS; col++)
 	    {
-	    	drops[col].setIcon(new ImageIcon());
+	    	drops[col].setUnderImage(null);
 	    }
 	    
 	    // set the inner slots
 	    for (int row = NUM_ROWS-1; row >= 0; row--) { //going this way so jlabels added correctly
 	      for (int column = 0; column < NUM_COLS; column++) { 
-	        slots[column][row].setIcon(new ImageIcon());
+	    	slots[column][row].setUnderImage(null);
 	      }      
 	    }    
 	    
@@ -88,6 +105,7 @@ public class ConnectFourGUI extends JPanel{
   }
    
   public void addListener(ConnectFourListener listener) { 
+	c4listener = listener;
 	for (int column = 0; column < NUM_COLS; column++) { 
 	  drops[column].addMouseListener(listener); 
 	}   
@@ -98,7 +116,7 @@ public class ConnectFourGUI extends JPanel{
       }      
     }  
   }
-  public int getColumn(JLabel label) {
+  public int getColumn(TileCanvas label) {
 	for (int col = 0; col < NUM_COLS; col++)
 	  {
 	  	if (drops[col] == label)
@@ -134,7 +152,7 @@ public void set(int column, int row) {
     	
     	ImageIcon image = new ImageIcon(resizedImage);
     	if (image != null) {
-    		slots[column][row].setIcon(image);
+    		slots[column][row].setUnderImage(image);
     	}
     } else {
         System.err.println("Couldn't find file: " + path);
@@ -150,7 +168,7 @@ public void set(int column, int row) {
 		if (column < 0 || column >= NUM_COLS)
 			return;
 		
-		drops[currentCol].setIcon(new ImageIcon());
+		drops[currentCol].setUnderImage(null);
 		
 		currentCol = column;
 		
@@ -170,7 +188,7 @@ public void set(int column, int row) {
 	    	
 	    	ImageIcon image = new ImageIcon(resizedImage);
 	    	if (image != null) {
-	    		drops[currentCol].setIcon(image);
+	    		drops[currentCol].setUnderImage(image);
 	    	}
 	    } else {
 	        System.err.println("Couldn't find file: " + path);

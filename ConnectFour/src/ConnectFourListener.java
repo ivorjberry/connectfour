@@ -1,6 +1,8 @@
 //Code adapted from: http://wiki.acse.net/images/1/1d/ConnectFour.pdf
 
 import javax.swing.*; 
+
+import java.awt.Canvas;
 import java.awt.event.*; 
 public class ConnectFourListener implements MouseListener { 
    
@@ -15,7 +17,7 @@ public class ConnectFourListener implements MouseListener {
   }  
   public void mouseClicked(MouseEvent event) { 
 	if (gui.color == gui.currentPlayer) {
-	    JLabel label = (JLabel) event.getComponent(); 
+	    TileCanvas label = (TileCanvas) event.getComponent(); 
 	    int column = gui.getColumn(label); 
 	    client.send_move(column);
 	    int row = game.drop(column); 
@@ -29,7 +31,7 @@ public class ConnectFourListener implements MouseListener {
   public void mouseReleased(MouseEvent event) { 
   }  
   public void mouseEntered(MouseEvent event) { 
-	JLabel label = (JLabel) event.getComponent(); 
+	TileCanvas label = (TileCanvas) event.getComponent(); 
     int column = gui.getColumn(label); 
     if (column != -1) { 
       gui.mouseInColumn(column); 
