@@ -197,7 +197,7 @@ public class Client extends JFrame {
       //add(southBot, BorderLayout.SOUTH);
       pack();
       textArea.requestFocusInWindow();
-      setSize(680, 850);
+      setSize(720, 850);
       setVisible(true);
 
       // Dispose if X is clicked
